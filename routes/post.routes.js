@@ -2,62 +2,43 @@
 const express = require("express")
 const { postModel } = require("../models/post.models")
 
-const postRoutes = express.Router()
+
+const profileRoute = express.Router()
 
 
 
-
-postRoutes.get("/",async(req,res)=>{
-      const id = req.body.userId
-      const device = req.query.device
-      console.log("id",id)
+profileRoute.get("/",async(req,res)=>{
+   
     try {
-           if(device){
-            const totalpost = await postModel.find({userId:id,device})
-            res.status(200).send({data:totalpost})
-           }
-           else{
-            const totalpost = await postModel.find({userId:id})
-            res.status(200).send({data:totalpost})
-           }
-           
-        
-  
-    } catch (error) {
-        res.status(404).send({msg:error})
-    }
+        const getdata = await postModel.find()
+      
+        res.send({msg:"Data added succesfully",data:getdata})
+      } catch (error) {
+        res.send({msg:error})
+      }
 })
 
 
-postRoutes.post("/add",async(req,res)=>{
-    console.log(req.body)
-     try {
-        const newpost = new postModel(req.body)
-        await newpost.save()
-        res.status(200).send({msg:newpost})
-     } catch (error) {
-        
-     }
-})
-postRoutes.patch("/update/:id",async(req,res)=>{
-     const id = req.params.id
-     try {
-        await postModel.findByIdAndUpdate(id,req.body)
-        const updateddata = await postModel.findById(id) 
-        res.status(200).send({data:updateddata})
-     } catch (error) {
-        res.status(404).send({msg:error})
-     }
-})
-postRoutes.delete("/delete/:id",async(req,res)=>{
-    const id = req.params._id
-    try {
-        const updateddata = await postModel.findByIdAndDelete(id)
-       res.status(200).send({data:updateddata})
-    } catch (error) {
-       res.status(404).send({msg:error})
-    }
+profileRoute.post("/add",async(req,res)=>{
+   
+     const {amount,rate,tenure} = req.body
+     const ra = +rate/12/100
+     console.log("ra",ra)
+    const emi =   +amount*+ra*1 + ra*+tenure/(1 +ra*+tenure - 1)
+    let interest = emi*+tenure
+    console.log("uuu",interest)
+    let total = +amount+interest
+  console.log("tt",total)
+       try {
+          const singledata = new postModel({emi,interest,total})
+          await singledata.save()
+          res.send({msg:"Data added succesfully"})
+         
+       } catch (error) {
+          res.send({msg:error.message})
+       }
 })
 
 
-module.exports = postRoutes
+
+module.exports = profileRoute

@@ -3,9 +3,9 @@ const mongoose = require("mongoose")
 
 
 postShema = mongoose.Schema({
-    title:String,
-    body:String,
-    device:String,
+    emi:Number,
+    interest :Number,
+    total:Number,
     userId:String
 })
 

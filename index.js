@@ -4,6 +4,7 @@ const { connection } = require("./config/db")
 const userRoutes = require("./routes/user.routes")
 const postRoutes = require("./routes/post.routes")
 const { auth } = require("./middlewares/auth")
+
 require("dotenv").config()
 const app = express()
 
@@ -11,7 +12,7 @@ app.use(cors())
 app.use(express.json())
 app.use("/users",userRoutes)
 app.use(auth)
-app.use("/posts",postRoutes)
+app.use("/post",postRoutes)
 
 app.listen(process.env.port, async()=>{
 
